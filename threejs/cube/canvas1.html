@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用canvas绘制一个点</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500"></canvas>
+<script type="text/javascript">
+var canvas = document.getElementById('canvas');
+var context = canvas.getContext('2d');
+canvas.width = 256;
+canvas.height =256;
+context.fillStyle = "rgba(0,0,0,1)";
+context.fillRect(0, 0, 256, 256);
+
+
+context.rect(16, 16, 224, 224);
+context.lineJoin = "round";
+context.lineWidth = 16;
+context.fillStyle = "rgba(256,0,0,1)";
+context.strokeStyle = "rgba(0,256,0,1)";
+context.stroke();
+context.fill();
+var i = 2;
+var j = 1;
+var text = j;
+var text1 = i;
+context.fillStyle = "rgba(0,0,0,0.8)";
+context.font = "100px serif";
+context.fillText(text,60,150);
+context.fillText('-',100,140);
+context.font = "60px serif";
+context.fillText(text1,140,140);
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>17three.js几何体组合和合并</title>
+    <script src="js/three.js"></script>
+    <script src="js/dat.GUI.js"></script>
+    <script src="fonts/helvetiker_bold.typeface.js"></script>
+    <script src="fonts/helvetiker_regular.typeface.js"></script>
+    <style>
+        body{ margin: 0; overflow: hidden }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+    var controls = new function () {
+        this.speed = 0;
+        this.cameraXZ = 0.01;
+        this.cubex = 0;
+        this.cube23x = 0;
+    };
+    var gui = new dat.GUI;
+    gui.add(controls,'speed',-10,10,"旋转速度");
+    gui.add(controls,'cameraXZ',-9,9,"旋转相机");
+    gui.add(controls,'cubex',-30,30,"长方体X轴位置");
+    gui.add(controls,'cube23x',-30,30,"merge对象X轴位置");
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+    camera.position.set(-10,20,50);
+    camera.lookAt(scene.position);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    renderer.setClearColor(0xCCCCCC);
+    renderer.shadowMapEnabled = true;
+
+    var axes = new THREE.AxisHelper(10);
+    scene.add(axes);
+
+    var cubeGem = new THREE.BoxGeometry(10,10,2);
+    var cubeMat = new THREE.MeshLambertMaterial({color:0x00FF4C});
+    var cube = new THREE.Mesh(cubeGem,cubeMat);
+    cube.position.set(0,0,0);
+    cube.castShadow = true;
+    //scene.add(cube);
+
+    var cubeGem1 = new THREE.SphereGeometry(5,20,20);
+    var cubeMat1 = new THREE.MeshLambertMaterial({color:0xFF334C});
+    var cube1 = new THREE.Mesh(cubeGem1,cubeMat1);
+    cube1.position.set(-10,0,0);
+    cube1.castShadow = true;
+    //scene.add(cube1);
+
+    //右边独立球体
+    var cubeGem2 = new THREE.BoxGeometry(10,10,10);
+    var cubeMat2 = new THREE.MeshLambertMaterial({color:0x2233FC});
+    var cube2 = new THREE.Mesh(cubeGem2,cubeMat2);
+    cube2.position.set(10,0,0);
+    cube2.castShadow = true;
+    cube2.geometry.computeBoundingBox();
+    cube2.geometry.center();
+    helper2 = new THREE.BoundingBoxHelper(cube2,0x880088);
+    helper2.update();
+    //scene.add(helper2);
+    scene.add(cube2);
+    //右上边独立球体2
+    var cubeGem3 = new THREE.SphereGeometry(5,20,20);
+    var cubeMat3 = new THREE.MeshLambertMaterial({color:'#ff420f'});
+    var cube3 = new THREE.Mesh(cubeGem3,cubeMat3);
+    cube3.position.set(10,10,0);
+    cube3.castShadow = true;
+    cube3.geometry.computeBoundingBox();
+    cube3.geometry.center();
+    helper3 = new THREE.BoundingBoxHelper(cube3,0x332288);
+    helper3.update();
+    //scene.add(helper3);
+    scene.add(cube3);
+    //合并 合并只是合并网格对象，材质还需要再次赋值
+    var geometrycube23 = new THREE.Geometry();
+    //cube2.updateMatrix();  //还不知道这个有什么作用
+    geometrycube23.merge(cube2.geometry, cube2.matrix);
+    //cube3.updateMatrix();
+    geometrycube23.merge(cube3.geometry, cube3.matrix); //重复操作就可以
+    geometrycube23.merge(cube.geometry, cube.matrix); //重复操作就可以
+    var cubeMaterial = new THREE.MeshLambertMaterial({color:'#c53dff'});
+    var gemo23 = new THREE.Mesh(geometrycube23, cubeMaterial);
+    console.log(gemo23);
+    gemo23.geometry.computeBoundingBox();//计算包围盒
+    gemo23.geometry.center();//计算包围盒并把合并后的物体的中心移动到包围盒的中心
+    helper23 = new THREE.BoundingBoxHelper(gemo23,0x888888);
+    helper23.update();
+    scene.add(helper23);
+    scene.add(gemo23);
+
+    //组合 中间长方体和左边球体
+    var cubeGroup = new THREE.Object3D();
+    cubeGroup.add(cube);
+    cubeGroup.add(cube1);
+    scene.add(cubeGroup);
+    //cubeGroup.geometry.computeBoundingBox();//不能计算包围盒，因为object3d本身是空的没有geometry属性，但是它的children[i]可以计算。
+    helper1 = new THREE.BoundingBoxHelper(cubeGroup,0x888888);//但是可以显示包围盒，真是够了
+    helper1.update();
+    scene.add(helper1);
+
+    function createMesh(geom) {
+        var meshMaterial = new THREE.MeshLambertMaterial({color: 0xFF0000, transparent: true});
+        meshMaterial.side = THREE.DoubleSide;
+        var wireFrameMat = new THREE.MeshBasicMaterial();
+        wireFrameMat.wireframe = false;
+        var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
+
+        return mesh;
+    }
+    var options = {
+        size:10,
+        height:2,
+    };
+    text1 = createMesh(new THREE.TextGeometry("Three.js",options));
+    text1.position.set(0,0,0);
+
+
+    //text1.children[0].geometry.computeBoundingBox();
+    text1.children[0].geometry.center();
+    console.log(text1.children[0].geometry.boundingBox);
+    helper = new THREE.BoundingBoxHelper(text1,0xff0000);
+    helper.update();
+    scene.add(helper);
+    text1.position.y = 10;
+    scene.add(text1);
+
+    var ambientLight = new THREE.AmbientLight(0x222222);
+    scene.add(ambientLight);
+    var spotLight = new THREE.SpotLight(0xFFFFFF);
+    spotLight.position.set(-30,50,30);
+    spotLight.lookAt(scene.position);
+    spotLight.castShadow = true;
+    scene.add(spotLight);
+    document.body.appendChild(renderer.domElement);
+    //renderer.render(scene,camera);
+
+    function run() {
+        helper.update();
+        helper1.update();
+        helper23.update();
+        gemo23.rotation.y += 0.1;
+        gemo23.position.x = controls.cube23x;
+        camera.position.x = 50*Math.sin(controls.cameraXZ);
+        camera.position.z = 50*Math.cos(controls.cameraXZ);
+        camera.lookAt(scene.position);
+        text1.rotation.y += controls.speed/1000;
+        cube.position.x = controls.cubex;
+        cubeGroup.rotation.y += 0.01;
+        renderer.render(scene,camera);
+        requestAnimationFrame(run);
+    }
+    run();
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>彩色立方体</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/TrackballControls.js"></script>
+    <style type="text/css">
+        body{margin: 0;overflow: hidden;}
+    </style>
+</head>
+<body>
+<div id="WebGL-output"></div>
+<script type="text/javascript">
+    function init() {
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+        camera.position.set(30,30,30);
+        camera.lookAt(scene.position);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(innerWidth,window.innerHeight);
+        renderer.setClearColor('#a3bdc0');
+
+        function drawCube() {
+            var cubeGeometry = new THREE.BoxGeometry(4, 4, 4);
+            //var cubeGeometry = new THREE.SphereGeometry(2, 20, 20);
+            var color = new THREE.Color(0xFF0000);
+
+            var colorArray = new Float32Array([Math.random(), Math.random(), Math.random()]);
+            var cubeMaterial = new THREE.MeshLambertMaterial({
+                color: color.fromArray(colorArray)
+            });
+            var cubeMaterial2 = new THREE.MeshBasicMaterial({
+                wireframe:true,
+            });
+            //单一材质
+            var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            //混合材质 但是会显示所有三角形的边
+            //var cube = new THREE.SceneUtils.createMultiMaterialObject(cubeGeometry,[cubeMaterial,cubeMaterial2]);
+            //显示线框也失败了，只能是boundingboxhelper,boxhelper不行，不知道为什么？
+            /*var helper1 = new THREE.BoundingBoxHelper(cube,0xff0000);
+            helper1.update();
+            scene.add(helper1);*/
+            scene.add(cube);
+            return cube;
+        }
+        for(var i=-1;i<2;i++){
+            for(var j=-1;j<2;j++){
+                for(var k=-1;k<2;k++){
+                    cube = drawCube();
+                    drawCube();
+                    cube.position.set(i*4,j*4,k*4);
+                }
+            }
+        }
+
+
+        var amblight = new THREE.AmbientLight(0xCCCCCC);
+        scene.add(amblight);
+        var spotlight = new THREE.SpotLight(0x777777);
+        spotlight.position.set(40,50,40);
+        scene.add(spotlight);
+
+        var axes = new THREE.AxisHelper(1);
+        scene.add(axes);
+
+        document.getElementById('WebGL-output').appendChild(renderer.domElement);
+        renderer.render(scene,camera);
+        var trackballControls = new THREE.TrackballControls(camera);
+        trackballControls.panSpeed = 0;
+        var clock = new THREE.Clock();
+        function renderscence() {
+            var delta = clock.getDelta();
+            trackballControls.update(delta);
+            requestAnimationFrame(renderscence);
+            renderer.render(scene,camera);
+        }
+        renderscence();
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        window.addEventListener('resize', onResize, false);
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

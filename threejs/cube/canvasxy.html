@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用一个for循环绘制xy轴</title>
+</head>
+<body>
+<canvas id="canvas" width="700" height="700"></canvas>
+<script type="text/javascript">
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    canvas.width = 800;
+    canvas.height =600;
+    context.fillStyle = "rgba(200,200,200,1)";
+    context.fillRect(0, 0, 800, 600);
+    var num = 0;
+    var numK = 81; //一个多少个坐标
+    var numH = 9;//一行/一列多少个
+    var numW = 60; //间距
+    //横排
+    /*for(var i=0;i<numK;i++){
+        num++;
+        context.fillStyle = "rgba(0,0,0,1)";
+        context.font = "30px serif";
+        var x = 30+(i%numH)*numW;
+        var y = 50+parseInt(i/numH)*numW;
+        context.fillText(num,x,y);
+    }*/
+    //竖排 交换x和y 就可以实现
+    for(var i=0;i<numK;i++){
+        num++;
+        context.fillStyle = "rgba(0,0,0,1)";
+        context.font = "30px serif";
+        var y = 50+(i%numH)*numW;
+        var x = 30+parseInt(i/numH)*numW;
+        context.fillText(num,x,y);
+        context.font = "15px serif";
+        context.fillText('('+parseInt(i/numH)+','+i%numH+')',x,y+18);
+    }
+
+</script>
+</body>
+</html>
