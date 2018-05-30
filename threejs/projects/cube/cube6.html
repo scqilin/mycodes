@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>01基本组件</title>
+    <script src="../../js/three.js"></script>
+    <style>
+        body{
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+<body>
+<div id="but1" style="position: absolute;top: 0;left: 0"><button onclick="AA()">AA</button> </div>
+<div id="but3" style="position: absolute;top: 30px;left: 0"><button onclick="CC()">CC</button> </div>
+<script type="text/javascript">
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+    camera.position.set(-80,60,80);
+    camera.lookAt(scene.position);
+    //坐标
+    var axes = new THREE.AxisHelper(10);
+    scene.add(axes);
+    //
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor('#a68da2');
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    renderer.shadowMapEnabled = true;
+
+    //基本颜色
+    var color = new THREE.Color(0xCCCCCC);
+    //随机颜色数组 每次使用时候调用一次
+    function randomColor() {
+        var rColor = new Float32Array( [Math.random(),Math.random(),Math.random()]);
+        return rColor;
+    }
+
+    //材质
+    var geoMaterial1 = new THREE.MeshBasicMaterial({
+        color:0xFFFFFF*Math.random(),wireframe:true
+    });
+
+    var geoMaterial2 = new THREE.MeshLambertMaterial({
+        color:color.fromArray(randomColor())
+    });
+    var geoMaterial3 = new THREE.MeshLambertMaterial({
+        color:0xDDDDDD
+    });
+    //平面
+    var planeGeometry = new THREE.PlaneGeometry(120,120);
+    var plane =  new THREE.Mesh(planeGeometry,geoMaterial3);
+    plane.rotation.x = -0.5*Math.PI;
+    plane.position.set(20,-8,-20);
+    plane.receiveShadow = true;
+    scene.add(plane);
+    //立方体线框
+    var cubeGeometry = new THREE.BoxGeometry(16,16,16);
+    var cube = new THREE.Mesh(cubeGeometry,geoMaterial1);
+    cube.position.set(20,0,0);
+    cube.name = 'cube1';
+    scene.add(cube);
+    //立方体
+    var cube2 = new THREE.Mesh(cubeGeometry,geoMaterial2);
+    cube2.position.set(-20,0,0);
+    cube2.castShadow = true;
+    scene.add(cube2);
+    cube2.name = 'cube2';
+    //球体
+    var sphereGeometry = new THREE.SphereGeometry(6,20,20);
+    var sphereMaterial = new THREE.MeshLambertMaterial({
+        color:color.fromArray(randomColor())
+    });
+    var sphere = new THREE.Mesh(sphereGeometry,sphereMaterial);
+    sphere.position.set(0,0,20);
+    sphere.castShadow = true;
+    scene.add(sphere);
+    sphere.name = 'sphere1';
+    console.log(scene.children);
+    var group = new THREE.Group();
+    var grouphelper = new THREE.BoundingBoxHelper(group,0xff0000);
+    function changenames() {
+        for(var i = 5; i<8; i++) {
+            var temcube = scene.getObjectById(i);
+            var positi = temcube.position;
+            console.log(i);
+            console.log(positi);
+            if(positi.x ==20&&positi.x==0&&positi.z==0){
+                temcube.name = 'cube1s';
+                console.log('2222');
+            }
+        }
+    }
+    changenames();
+    console.log(scene.children);
+    function AA() {
+        scene.remove(group.children);
+        group = new THREE.Group();
+        group.add(scene.getObjectById(5));
+        group.add(scene.getObjectById(6));
+        scene.add(group);
+        grouphelper = new THREE.BoundingBoxHelper(group,0xff0000);
+        grouphelper.update();
+        scene.add(grouphelper);
+//scene.children
+    }
+
+    function CC() {
+        scene.remove(group.children);
+        group = new THREE.Group();
+        group.add(scene.getObjectById(5));
+        group.add(scene.getObjectById(7));
+        scene.add(group);
+        grouphelper = new THREE.BoundingBoxHelper(group,0xff0000);
+        grouphelper.update();
+        scene.add(grouphelper);
+    }
+
+    var ambientLight = new THREE.AmbientLight(0x666666);
+    scene.add(ambientLight);
+    var SpotLight = new THREE.SpotLight(0xFFFFFF);
+    SpotLight.position.set(-60,60,-60);
+    SpotLight.castShadow = true;
+    scene.add(SpotLight);
+
+    document.body.appendChild(renderer.domElement);
+    renderer.render(scene,camera);
+    function run() {
+        group.rotation.y -= 0.01;
+        grouphelper.update();
+        renderer.render(scene,camera);
+        setTimeout(run,100);
+    }
+    run();
+    function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onResize, false);
+
+</script>
+</body>
+</html>

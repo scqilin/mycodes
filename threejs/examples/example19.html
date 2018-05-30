@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>19three.jsg轨迹球控制</title>
+    <script src="../js/three.js"></script>
+    <script src="../js/dat.GUI.js"></script>
+    <script src="../js/TrackballControls.js"></script>
+    <style>
+        body{ margin: 0; overflow: hidden }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+    var controls = new function ()  {
+        this.spend = 1;
+        this.year = 0;
+    }
+    var gui = new dat.GUI();
+    gui.add(controls,'spend',0,100,"公转速度");
+    gui.add(controls,'year',"渲染次数").listen();
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+    camera.position.set(-30,30,40);
+    camera.lookAt(scene.position);
+
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    renderer.setClearColor('#1f1f1f');
+
+    function drawSphere(x,y,z,r,colorS) {
+        var sphereGeometry = new THREE.SphereGeometry(r,20,20);
+        var sphereMaterial = new THREE.MeshLambertMaterial({
+            color:colorS
+        });
+        var sphere = new THREE.Mesh(sphereGeometry,sphereMaterial);
+        sphere.position.x = x;
+        sphere.position.y = y;
+        sphere.position.z = z;
+        scene.add(sphere);
+        return sphere;
+    }
+    //想按照比例来做是不存在的 ,因为实际比例太变态了。
+    sphere1 = drawSphere(0,0,0,4,0xFF0000);
+    sphere2 = drawSphere(5.7,0,0,1.5,'#01ADFF');//水星
+    sphere3 = drawSphere(10.8,0,0,1,'#ffb200');//金星
+    sphere4 = drawSphere(15,0,0,1.2,'#0400ff');//地球
+    sphere5 = drawSphere(18,0,0,1.4,'#b8291e');//火星
+    sphere6 = drawSphere(22,0,0,1.3,'#515302');//木星
+    sphere7 = drawSphere(25,0,0,2.0,'#524c3d');//土星
+    sphere8 = drawSphere(29,0,0,2.1,'#d000dd');//天王星
+    sphere9 = drawSphere(35,0,0,1.9,'#00ffa6');//海王星 想按照比例来做 是不存在的
+
+
+    var ambientLight = new THREE.AmbientLight('#222222');
+    scene.add(ambientLight);
+    var spotLight = new THREE.SpotLight(0xFFFFFF);
+    spotLight.position.set(-40,80,-40);
+    scene.add(spotLight);
+
+    document.body.appendChild(renderer.domElement);
+
+    renderer.render(scene,camera);
+
+    var speed2 = 2*Math.PI*Math.random();
+    var speed3 = 2*Math.PI*Math.random();
+    var speed4 = 2*Math.PI*Math.random();
+    var speed5 = 2*Math.PI*Math.random();
+    var speed6 = 2*Math.PI*Math.random();
+    var speed7 = 2*Math.PI*Math.random();
+    var speed8 = 2*Math.PI*Math.random();
+    var speed9 = 2*Math.PI*Math.random();
+
+    var trackballControls = new THREE.TrackballControls(camera);
+    var clock = new THREE.Clock();
+    function run() {
+        var delta = clock.getDelta();
+        trackballControls.update(delta);
+        controls.year += 1;
+        var beishu = 500;
+        speed2 += (1/0.241)*controls.spend/beishu;
+        speed3 += (1/0.615)*controls.spend/beishu;
+        speed4 += 1*controls.spend/beishu;
+        speed5 += (1/1.881)*controls.spend/beishu;
+        speed6 += (1/11.86)*controls.spend/beishu;
+        speed7 += (1/29.46)*controls.spend/beishu;
+        speed8 += (1/84.01)*controls.spend/beishu;
+        speed9 += (1/164.8)*controls.spend/beishu;
+        sphere2.position.x = 8*Math.cos(speed2);
+        sphere2.position.z = 8*Math.sin(speed2);
+        sphere3.position.x = 12*Math.cos(speed3);
+        sphere3.position.z = 12*Math.sin(speed3);
+        sphere4.position.x = 15*Math.cos(speed4);
+        sphere4.position.z = 15*Math.sin(speed4);
+        sphere5.position.x = 18*Math.cos(speed5);
+        sphere5.position.z = 18*Math.sin(speed5);
+        sphere6.position.x = 22*Math.cos(speed6);
+        sphere6.position.z = 22*Math.sin(speed6);
+        sphere7.position.x = 25*Math.cos(speed7);
+        sphere7.position.z = 25*Math.sin(speed7);
+        sphere8.position.x = 29*Math.cos(speed8);
+        sphere8.position.z = 29*Math.sin(speed8);
+        sphere9.position.x = 33*Math.cos(speed9);
+        sphere9.position.z = 33*Math.sin(speed9);
+        var zer2 = (sphere2.position.x/sphere2.position.z).toFixed(1);
+        var zer3 = (sphere3.position.x/sphere3.position.z).toFixed(1);
+        var zer4 = (sphere4.position.x/sphere4.position.z).toFixed(1);
+        var zer5 = (sphere5.position.x/sphere5.position.z).toFixed(1);
+        //太阳 水星 金星 地球 火星 5星连珠的时候 停止运行
+        if((zer3 == zer2)&&(zer3 == zer4)&&(zer5 == zer4)){
+            controls.spend = 0;
+            alert("2080年 五星连珠，世界末日！");
+        }
+
+        renderer.render(scene,camera);
+        requestAnimationFrame(run);
+    }
+    run();
+
+
+</script>
+</body>
+</html>

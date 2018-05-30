@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>跳动的小球2</title>
+    <script src="../js/three.js"></script>
+    <style>
+        body{
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="three"></div>
+<script type="text/javascript">
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+    camera.position.set(0,20,40);
+    camera.lookAt(scene.position);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    renderer.setClearColor('#CCCCCC');
+    renderer.shadowMapEnabled = true;
+    //坐标
+    var axes = new THREE.AxisHelper(4);
+    scene.add(axes);
+    //
+    var planeGeometry = new THREE.PlaneGeometry(40,10,1,1);
+    var planeMaterial = new THREE.MeshLambertMaterial({
+        color:0x8DCC87
+    });
+    var plane = new THREE.Mesh(planeGeometry,planeMaterial);
+    plane.position.set(0,0,0);
+    plane.rotation.x = -0.5*Math.PI;
+    plane.receiveShadow = true;
+    scene.add(plane);
+
+    //立方体1
+    var cubeGeometry = new THREE.BoxGeometry(4,4,4);
+    var cubeMaterial = new THREE.MeshLambertMaterial({
+        color:0x0000FF
+    });
+    var cube = new THREE.Mesh(cubeGeometry,cubeMaterial);
+    cube.position.set(-16,2,0);
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    scene.add(cube);
+    //立方体2
+    var cubeGeometry = new THREE.BoxGeometry(4,4,4);
+    var cubeMaterial = new THREE.MeshLambertMaterial({
+        color:0x22FFDD
+    });
+    var cube2 = new THREE.Mesh(cubeGeometry,cubeMaterial);
+    cube2.position.set(16,2,0);
+    cube2.castShadow = true;
+    cube2.receiveShadow = true;
+    scene.add(cube2);
+    //圆球
+    var sphereGeometry = new THREE.SphereGeometry(2,20,20);
+    var sphereMaterial = new THREE.MeshLambertMaterial({
+        color:0xFF00F7
+    });
+    var sphere = new THREE.Mesh(sphereGeometry,sphereMaterial);
+    sphere.position.set(16,6,0);
+    sphere.castShadow = true;
+    scene.add(sphere);
+
+    var ambientLight = new THREE.AmbientLight('#212121');
+    scene.add(ambientLight);
+    var pointLight = new THREE.SpotLight(0xFFFFFF);
+    pointLight.position.set(0,80,0);
+    pointLight.castShadow = true;
+    scene.add(pointLight);
+    document.body.appendChild(renderer.domElement);
+    renderer.render(scene,camera);
+    var step = 90;
+    var angle = 0;
+    function run() {
+        step += 1;
+        angle = step*Math.PI/180;
+        //camera.position.x = 16*(Math.sin(step));
+        sphere.position.x = 16*(Math.sin(angle));
+        sphere.position.y = 6+(8*Math.abs(Math.cos(angle)));
+        if(step > 2699){
+            step = 2699;
+        }
+        console.log(sphere.position.y);
+        requestAnimationFrame(run);
+        renderer.render(scene,camera);
+    }
+    run()
+
+</script>
+</body>
+</html>
