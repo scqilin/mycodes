@@ -171,8 +171,8 @@
             requestAnimationFrame(render);
             renderer.render(scene,camera);
             controls.update(delta); //不能在里面写clock.getDelta()
-            if(times<500){
-                //spheres[times] = cubeSphere(0.6,3,times/6,10*Math.cos(times/20),10*Math.sin(times/20));
+            if(times<5000){
+                spheres[times] = cubeSphere(0.6,3,times/6,10*Math.cos(times/20),10*Math.sin(times/20));
                 spheres1[times] = cubeSphere(0.3,3,times/6,
 				10*Math.cos(times/20)+4*Math.cos(times/5)+3*Math.cos(times/2.5),
 				10*Math.sin(times/20)+4*Math.sin(times/5)+3*Math.cos(times/2.5)
