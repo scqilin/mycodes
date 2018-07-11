@@ -19,7 +19,7 @@
         var clock = new THREE.Clock();
         var spheres = [];
         var spheres1 = [];
-        var spheresa,spheresb;
+        var spheresa,spheresb,cube1;
         var times = 0;
         drawScene();
 
@@ -28,9 +28,9 @@
             iniLight();
             orbitControls();
             windowResize();
-            var cube1 = cubeDr(2,0,2,0);
-            var cube2 = cubeDr(2,0,15,0);
-            drawline(cube1,cube2);
+            //cube1 = cubeDr(2,0,2,0);
+            //var cube2 = cubeDr(2,0,15,0);
+            //drawline(cube1,cube2);
             //iniPlane();
             //spheresa = cubeSphere(1,8,5,5,0);
             //spheresb = cubeSphere(1,8,0,5,0);
@@ -117,9 +117,9 @@
         }
         //小球
         function cubeSphere(r,a,x,y,z) {
-            var cubeGeo = new THREE.SphereGeometry(r,a);
+            var cubeGeo = new THREE.SphereBufferGeometry(r,a);
             var cubeMat = new THREE.MeshPhongMaterial({
-                color:0xfff000*Math.random(),
+                color:0xff0fff*Math.random(),
             });
             var sphere = new THREE.Mesh(cubeGeo,cubeMat);
             sphere.position.set(x,y,z);
@@ -171,16 +171,20 @@
             requestAnimationFrame(render);
             renderer.render(scene,camera);
             controls.update(delta); //不能在里面写clock.getDelta()
-            if(times<5000){
-                spheres[times] = cubeSphere(0.6,3,times/6,10*Math.cos(times/20),10*Math.sin(times/20));
-                spheres1[times] = cubeSphere(0.3,3,times/6,
-				10*Math.cos(times/20)+4*Math.cos(times/5)+3*Math.cos(times/2.5),
-				10*Math.sin(times/20)+4*Math.sin(times/5)+3*Math.cos(times/2.5)
+			
+			spheres[times] = cubeSphere(0.6,2,times/3,10*Math.cos(times/20),10*Math.sin(times/20));
+            spheres1[times] = cubeSphere(0.3,2,times/3,
+				10*Math.cos(times/20)+4*Math.cos(times/10)+3*Math.sin(times/5),
+				10*Math.sin(times/20)+4*Math.sin(times/10)+3*Math.cos(times/5)
 				);
                 //drawline(spheres[times],);
                 //drawline(spheres[times],spheres1[times]);
-
-            }
+			//controls.tragit.set(times/3,50,0);
+            //camera.lookAt(new THREE.Vector3(times/30,0));
+			if(times>=150){
+				scene.remove(spheres[times-150]);
+				scene.remove(spheres1[times-150]);
+			}
 
         }
 
