@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>three.js基本框架</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/Detector.js"></script>
+    <script src="../js/lights/RectAreaLightUniformsLib.js"></script>
+    <script type="text/javascript" src="../js/loaders/OBJLoader.js"></script>
+    <script type="text/javascript" src="../js/controls/OrbitControls.js"></script>
+    <style type="text/css">
+        body{margin: 0;overflow: hidden}
+    </style>
+</head>
+<body>
+<div id="webgl-output"></div>
+<script type="text/javascript">
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+    function init() {
+        var scene,camera,renderer,light,controls;
+        var clock = new THREE.Clock();
+        var textureCube;
+
+
+        function drawScene() {
+            iniScene();
+            iniLight();
+            orbitControls();
+            windowResize();
+            var cube1 = new cubeDr(20,8,4,0);
+            var cube2 = new cubeDr(80,-40,10,0);
+            console.log(cube1);
+            iniPlane();
+            objLoad();
+            //cube1.material.map = texture2;
+            render();
+        }
+        //objLoad
+        var texture1 = new THREE.TextureLoader().load( "xin.jpg" );
+        var texture2 = new THREE.TextureLoader().load( "fxaa_scene.png" );
+        var textureSpecular = new THREE.TextureLoader().load( "specular.jpg" );
+        texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
+        texture1.repeat.set(1,1);
+        texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
+        texture2.repeat.set(1,1);
+
+
+
+        function objLoad() {
+           var load = new THREE.OBJLoader();
+           load.load("models/Cube3D.OBJ",function (object) {
+               var objectcopy = object.clone();
+               object.scale.set(3,3,3);
+               object.position.set(0,6,0);
+               object.children[0].castShadow = true;
+               var mar = new THREE.MeshStandardMaterial({
+                   //color:0xff00ff,
+                   map:texture2,
+                   side:THREE.DoubleSide,
+               });
+               object.children[0].material = mar;
+               console.log(object);
+               scene.add(object);
+               objectcopy.scale.set(3,3,3);
+               objectcopy.position.set(-6,6,0);
+               objectcopy.children[0].material.wireframe = true;
+               scene.add(objectcopy);
+           })
+        }
+        //场景
+        function iniScene() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+            renderer = new THREE.WebGLRenderer();
+            camera.position.set(-30,30,30);
+            camera.lookAt(scene.position);
+            renderer.setClearColor(0x333333);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            renderer.setSize(window.innerWidth,window.innerHeight);
+            scene.add(new THREE.AxesHelper(4));
+            document.getElementById('webgl-output').appendChild(renderer.domElement);
+
+            var r = "skybox/";
+            var urls = [ r + "px.jpg", r + "nx.jpg",
+                r + "py.jpg", r + "ny.jpg",
+                r + "pz.jpg", r + "nz.jpg" ];
+
+            textureCube = new THREE.CubeTextureLoader().load( urls );
+            textureCube.format = THREE.RGBFormat;
+            textureCube.mapping = THREE.CubeReflectionMapping;
+            scene.background = textureCube;
+        }
+
+        //灯光
+
+        function iniLight() {
+            light = new THREE.AmbientLight(0x333333);
+            scene.add(light);
+
+            light = new THREE.SpotLight(0x888888);
+            light.position.set(0,40,30);
+            light.castShadow = true;
+            light.shadow.mapSize.height = 4096;
+            light.shadow.mapSize.width = 4096;
+            scene.add(light);
+
+            light = new THREE.HemisphereLight( 0xffffff,0x444444,0.6 );
+            light.position.set( 0, 200, 0 );
+            scene.add( light );
+
+            var rectLight = new THREE.RectAreaLight( 0xffffff, 10, 10, 10 );
+            rectLight.position.set( 0, 5, -15 );
+            scene.add( rectLight );
+            console.log(rectLight);
+            var rectLightMesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(), new THREE.MeshBasicMaterial() );
+            rectLightMesh.scale.x = rectLight.width;
+            rectLightMesh.scale.y = rectLight.height;
+            rectLight.add( rectLightMesh );
+        }
+        //地面 和 辅助网格
+        function iniPlane() {
+            var planeGeo = new THREE.PlaneGeometry(40,40);
+            var planeMat = new THREE.MeshStandardMaterial( { color: 0x999999} );
+            var plane = new THREE.Mesh(planeGeo,planeMat);
+            plane.receiveShadow = true;
+            plane.position.y = -0.01;
+            plane.rotation.x = -0.5*Math.PI;
+            scene.add(plane);
+
+            var grid = new THREE.GridHelper( 40, 20, 0x000000, 0x000000 );
+            grid.material.transparent = true;
+            grid.material.opacity = 0.3;
+            scene.add( grid );
+        }
+        //立方体
+        function cubeDr(a,x,y,z) {
+            var cubeGeo = new THREE.BoxGeometry(a,a,a,3,3,3);
+            var cubeMat = new THREE.MeshStandardMaterial({
+                color:0x888888,
+                roughness:0,
+                metalness: 0.9,
+                envMap:textureCube,
+                //refractionRatio:0.1,
+                //wireframe:true
+            });
+            var cube = new THREE.Mesh(cubeGeo,cubeMat);
+            cube.position.set(x,y,z);
+            cube.castShadow = true;
+            scene.add(cube);
+            //console.log(cube);
+            return cube;
+        }
+        //相机轨道控制器
+        function orbitControls() {
+            controls = new THREE.OrbitControls(camera,renderer.domElement);
+            //自转
+            //controls.autoRotate = true;
+            //controls.autoRotateSpeed = 0.2;
+            //阻尼 阻尼系数
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.4;
+            //缩放
+            controls.enableZoom = true;
+            controls.minDistance = 5;
+            controls.maxDistance = 1000;
+            //右键拖拽
+            controls.enablePan = false;
+        }
+        //改变窗口大小
+        function windowResize() {
+            window.addEventListener( 'resize', onWindowResize, false );
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        }
+        //渲染动画
+        function render() {
+            var delta = clock.getDelta();
+            requestAnimationFrame(render);
+            renderer.render(scene,camera);
+            controls.update(delta); //不能在里面写clock.getDelta()
+        }
+        drawScene();
+    }
+    window.onload = init;
+
+</script>
+</body>
+</html>

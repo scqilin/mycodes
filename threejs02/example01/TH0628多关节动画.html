@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>three.js简易直升机多级动画</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/Detector.js"></script>
+    <script type="text/javascript" src="../js/controls/OrbitControls.js"></script>
+    <style type="text/css">
+        body{margin: 0;overflow: hidden}
+    </style>
+</head>
+<body>
+<div id="webgl-output"></div>
+<script type="text/javascript">
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+    function init() {
+        var scene,camera,renderer,light,controls;
+        var clock = new THREE.Clock();
+        var cube = new THREE.Group();
+        var speed = 0.001;
+        var fly = 0;
+        drawScene();
+
+        function drawScene() {
+            iniScene();
+            iniLight();
+            orbitControls();
+            windowResize();
+            var cube1 = new cubeDr(4,4,4,0,2,0);
+            cube1.name = "cube1";
+            var cubeg1 = new THREE.Group();
+            cubeg1.name = "cubeg1";
+            var cubeg2 = new THREE.Group();
+            cubeg2.name = "cubeg2";
+            cubeg1.position.set(0,0,0);
+            cubeg2.position.set(0,0,0);
+            var cube2 = new cubeDr(2,6,2,0,6,0);
+            cube2.name = "cube2";
+            var cube3 = new cubeDr(18,1,1,0,2.5,0);
+            cube3.name = "cube3";
+            cube2.add(cubeg2);
+            cubeg2.add(cube3);
+            cubeg1.add(cube2);
+            cube.add(cube1);
+            cube.add(cubeg1);
+            scene.add(cube);
+            console.log(cube);
+            cubeDr(2,0,5,0);
+            iniPlane();
+            render();
+        }
+        //场景
+        function iniScene() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+            //scene.fog = new THREE.FogExp2(0xffffff,0.01);
+            renderer = new THREE.WebGLRenderer();
+            camera.position.set(0,30,60);
+            camera.lookAt(scene.position);
+            renderer.setClearColor(0x333333);
+            renderer.shadowMap.enabled = true;
+
+            renderer.setSize(window.innerWidth,window.innerHeight);
+            scene.add(new THREE.AxesHelper(4));
+            document.getElementById('webgl-output').appendChild(renderer.domElement);
+        }
+        //灯光
+        function iniLight() {
+            light = new THREE.AmbientLight(0x333333);
+            scene.add(light);
+
+            light = new THREE.SpotLight(0x888888);
+            light.position.set(0,40,0);
+            light.castShadow = true;
+            light.shadow.mapSize.height = 4096;
+            light.shadow.mapSize.width = 4096;
+            scene.add(light);
+
+            light = new THREE.HemisphereLight( 0xffffff,0x444444,0.6 );
+            light.position.set( 0, 200, 0 );
+            scene.add( light );
+        }
+        //地面 和 辅助网格
+        function iniPlane() {
+            var planeGeo = new THREE.PlaneGeometry(400,400);
+            var planeMat = new THREE.MeshPhongMaterial( { color: 0x999999} );
+            var plane = new THREE.Mesh(planeGeo,planeMat);
+            plane.receiveShadow = true;
+            plane.position.y = -0.01;
+            plane.rotation.x = -0.5*Math.PI;
+            scene.add(plane);
+
+            var grid = new THREE.GridHelper( 400, 20, 0x000000, 0x000000 );
+            grid.material.transparent = true;
+            grid.material.opacity = 0.3;
+            scene.add( grid );
+        }
+        //立方体
+        function cubeDr(a,b,c,x,y,z) {
+            var cubeGeo = new THREE.BoxGeometry(a,b,c);
+            var cubeMat = new THREE.MeshPhongMaterial({
+                color:0xfff000*Math.random()
+            });
+            var cube = new THREE.Mesh(cubeGeo,cubeMat);
+            cube.position.set(x,y,z);
+            cube.castShadow = true;
+            //scene.add(cube);
+            //console.log(cube);
+            return cube;
+        }
+        //相机轨道控制器
+        function orbitControls() {
+            controls = new THREE.OrbitControls(camera,renderer.domElement);
+            //自转
+            //controls.autoRotate = true;
+            //controls.autoRotateSpeed = 0.2;
+            //阻尼 阻尼系数
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.4;
+            //缩放
+            controls.enableZoom = true;
+            controls.minDistance = 5;
+            controls.maxDistance = 1000;
+            //右键拖拽
+            controls.enablePan = false;
+        }
+        //改变窗口大小
+        function windowResize() {
+            window.addEventListener( 'resize', onWindowResize, false );
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        }
+        //渲染动画
+
+        function render() {
+            var delta = clock.getDelta();
+            requestAnimationFrame(render);
+            speed += 0.002;
+            if(speed > 0.5){
+                speed = 0.5;
+                fly +=0.1;
+            }
+            cube.position.y = fly/5;
+            if(cube.position.y > 20){
+                cube.position.y = 20;
+            }
+            cube.position.x = fly/5;
+
+
+            scene.getObjectByName("cubeg1").rotation.y += 0.005;
+            scene.getObjectByName("cubeg2").rotation.y += speed;
+            renderer.render(scene,camera);
+            controls.update(delta);
+        }
+
+    }
+    window.onload = init;
+
+</script>
+</body>
+</html>

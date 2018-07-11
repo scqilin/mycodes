@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>three.js粒子动画</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/Detector.js"></script>
+    <script type="text/javascript" src="Tween.js"></script>
+    <script type="text/javascript" src="../js/controls/OrbitControls.js"></script>
+    <style type="text/css">
+        body{margin: 0;overflow: hidden}
+    </style>
+</head>
+<body>
+<div id="webgl-output"></div>
+<script type="text/javascript">
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+    function init() {
+        var scene,camera,renderer,light,controls;
+        var clock = new THREE.Clock();
+        var lizi;
+        var lizipoint = new THREE.Object3D();
+        var tween;
+        var count = 0;
+        drawScene();
+
+        function drawScene() {
+            iniScene();
+            iniLight();
+            orbitControls();
+            windowResize();
+            lizi = cubeDr(8,0,8,0);
+            console.log(lizi.geometry.vertices);
+            tweenlizi();
+            lizid();
+            iniPlane();
+            render();
+        }
+        function lizid() {
+            var textureLoader = new THREE.TextureLoader();
+            var sprite1 = textureLoader.load( 'models/spark1.png' );
+            var materialPoint = new THREE.PointsMaterial({
+                color:0xffffff,
+                size:0.5,
+                opacity:0.8,
+                transparent:true,
+                depthTest: false,
+                blending:THREE.AdditiveBlending,
+                map:sprite1
+            });
+
+            var geometryPoint = new THREE.SphereGeometry(4,20,20);
+            var geometryPointA = new THREE.SphereGeometry(8,20,20);
+
+            //var geometryPoint = lizi.clone().geometry;  //为什么克隆的也影响？
+            lizipoint = new THREE.Points(geometryPoint,materialPoint);
+            lizipoint.sortParticles = true;
+            lizipoint.position.set(0,4,0);
+            lizipoint.geometry.verticesNeedUpdate = true;
+            tween.start();
+
+
+            scene.add(lizipoint);
+            console.log(lizipoint.geometry.vertices);
+        }
+
+        //tween循环
+        function tweenlizi() {
+
+           /* var count1 = 0;
+            for( var i=0;i<lizi.geometry.vertices.length;i++){
+                count1++;
+            tween = new TWEEN.Tween({pos:lizipoint.geometry.vertices[i].position}).to({pos:lizi.geometry.vertices[i].position});
+            tween.easing(TWEEN.Easing.Sinusoidal.InOut);
+            tween.onUpdate(function () {
+                lizipoint.geometry.vertices[count1].position = lizi.geometry.vertices[count1].position;
+            });
+            }*/
+
+            var posSrc = {pos: 0};
+            tween = new TWEEN.Tween(posSrc).to({pos: 1}, 5000);
+            tween.easing(TWEEN.Easing.Sinusoidal.InOut);
+
+            var tweenBack = new TWEEN.Tween(posSrc).to({pos: 0}, 5000);
+            tweenBack.easing(TWEEN.Easing.Sinusoidal.InOut);
+            tween.chain(tweenBack);
+            tweenBack.chain(tween);
+
+
+            var onUpdate = function () {
+                var count = 0;
+                var pos = this.pos;
+                lizi.geometry.vertices.forEach(function (e) {
+                    var newY = ((e.y + 3.22544) * pos) - 3.22544;
+                    lizipoint.geometry.vertices[count++].set(e.x, newY, e.z);
+                });
+                lizipoint.sortParticles = true;
+
+            };
+
+            tween.onUpdate(onUpdate);
+            tweenBack.onUpdate(onUpdate);
+        }
+        //场景
+        function iniScene() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+            renderer = new THREE.WebGLRenderer();
+            camera.position.set(-30,30,30);
+            camera.lookAt(scene.position);
+            renderer.setClearColor(0x333333);
+            renderer.shadowMap.enabled = true;
+
+            renderer.setSize(window.innerWidth,window.innerHeight);
+            scene.add(new THREE.AxesHelper(4));
+            document.getElementById('webgl-output').appendChild(renderer.domElement);
+        }
+        //灯光
+        function iniLight() {
+            light = new THREE.AmbientLight(0x333333);
+            scene.add(light);
+
+            light = new THREE.SpotLight(0x888888);
+            light.position.set(0,40,30);
+            light.castShadow = true;
+            light.shadow.mapSize.height = 4096;
+            light.shadow.mapSize.width = 4096;
+            scene.add(light);
+
+            light = new THREE.HemisphereLight( 0xffffff,0x444444,0.6 );
+            light.position.set( 0, 200, 0 );
+            scene.add( light );
+        }
+        //地面 和 辅助网格
+        function iniPlane() {
+            var planeGeo = new THREE.PlaneGeometry(40,40);
+            var planeMat = new THREE.MeshPhongMaterial( { color: 0x999999} );
+            var plane = new THREE.Mesh(planeGeo,planeMat);
+            plane.receiveShadow = true;
+            plane.position.y = -0.01;
+            plane.rotation.x = -0.5*Math.PI;
+            scene.add(plane);
+
+            var grid = new THREE.GridHelper( 40, 20, 0x000000, 0x000000 );
+            grid.material.transparent = true;
+            grid.material.opacity = 0.3;
+            scene.add( grid );
+        }
+        //球体
+        function cubeDr(a,x,y,z) {
+            var cubeGeo = new THREE.SphereGeometry(a,20,20);
+            var cubeMat = new THREE.MeshPhongMaterial({
+                color:0xfff000*Math.random()
+            });
+            var cube = new THREE.Mesh(cubeGeo,cubeMat);
+            cube.position.set(x,y,z);
+            cube.castShadow = true;
+            cube.position.needsUpdate = true;
+            scene.add(cube);
+            console.log(cube);
+            return cube;
+        }
+        //相机轨道控制器
+        function orbitControls() {
+            controls = new THREE.OrbitControls(camera,renderer.domElement);
+            //自转
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.2;
+            //阻尼 阻尼系数
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.4;
+            //缩放
+            controls.enableZoom = true;
+            controls.minDistance = 5;
+            controls.maxDistance = 100;
+            //右键拖拽
+            controls.enablePan = true;
+        }
+        //改变窗口大小
+        function windowResize() {
+            window.addEventListener( 'resize', onWindowResize, false );
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        }
+        //渲染动画
+
+        function render() {
+            var delta = clock.getDelta();
+            TWEEN.update();
+            requestAnimationFrame(render);
+            renderer.render(scene,camera);
+            controls.update(delta); //不能在里面写clock.getDelta()
+            /*count++;
+            lizipoint.geometry.vertices[count].set(lizipoint.geometry.vertices[count].x,count/100,lizipoint.geometry.vertices[count].z);
+            if(count == 382){
+                count = 0;
+                lizipoint.geometry.vertices[count].set(lizipoint.geometry.vertices[count].x,count/100,lizipoint.geometry.vertices[count].z);
+            }*/
+            lizipoint.geometry.verticesNeedUpdate = true; //必须不停更新啊
+            lizi.geometry.needsUpdate = true;
+        }
+
+    }
+    window.onload = init;
+
+</script>
+</body>
+</html>
