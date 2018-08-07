@@ -21,6 +21,7 @@
         var spheres1 = [];
         var spheresa,spheresb,cube1;
         var times = 0;
+        var stoptem = 1;
         drawScene();
 
         function drawScene() {
@@ -53,14 +54,18 @@
             camera = new THREE.OrthographicCamera(window.innerWidth/-16,window.innerWidth/16,
                 window.innerHeight/16, window.innerHeight/-16,-200,1000);
             renderer = new THREE.WebGLRenderer();
-            camera.position.set(0,50,0);
-            camera.lookAt(scene.position);
+            camera.position.set(0,20,0);
+            //camera.lookAt(scene.position);
             renderer.setClearColor(0xffffff);
             //renderer.shadowMap.enabled = true;
 
             renderer.setSize(window.innerWidth,window.innerHeight);
             scene.add(new THREE.AxesHelper(100));
             document.getElementById('webgl-output').appendChild(renderer.domElement);
+            window.addEventListener('click',onDocumentMouseDown,false);
+            function onDocumentMouseDown(event) {
+                stoptem ++;
+            }
         }
         //灯光
         function iniLight() {
@@ -166,25 +171,29 @@
         }
         //渲染动画
         function render() {
-            times ++;
+
             var delta = clock.getDelta();
             requestAnimationFrame(render);
             renderer.render(scene,camera);
             controls.update(delta); //不能在里面写clock.getDelta()
-			
-			spheres[times] = cubeSphere(0.6,2,times/3,10*Math.cos(times/20),10*Math.sin(times/20));
-            spheres1[times] = cubeSphere(0.3,2,times/3,
-				10*Math.cos(times/20)+4*Math.cos(times/10)+3*Math.sin(times/5),
-				10*Math.sin(times/20)+4*Math.sin(times/10)+3*Math.cos(times/5)
-				);
+            if(stoptem%3 == 1){
+                times ++;
+                spheres[times] = cubeSphere(0.6,2,times/3,10*Math.cos(times/20),10*Math.sin(times/20));
+                spheres1[times] = cubeSphere(0.3,2,times/3,
+                    10*Math.cos(times/20)+4*Math.cos(times/10)+3*Math.sin(times/5),
+                    10*Math.sin(times/20)+4*Math.sin(times/10)+3*Math.cos(times/5)
+                );
                 //drawline(spheres[times],);
                 //drawline(spheres[times],spheres1[times]);
-			//controls.tragit.set(times/3,50,0);
-            //camera.lookAt(new THREE.Vector3(times/30,0));
-			if(times>=150){
-				scene.remove(spheres[times-150]);
-				scene.remove(spheres1[times-150]);
-			}
+                //controls.target =new THREE.Vector3(times+10/3,50,0);
+                camera.position.set(times/3,10,0);
+                controls.target.set(times/3,10,0);
+                if(times>=150){
+                    scene.remove(spheres[times-150]);
+                    scene.remove(spheres1[times-150]);
+                }
+            }
+
 
         }
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js队列</title>
+</head>
+<body>
+<script type="text/javascript">
+class Queue{
+    constructor(){
+        this.items = [];
+        this.it = [];
+    }
+    enqueue(element){
+        this.items.push(element);
+    }
+    dequeue(){
+        return this.items.shift();
+    }
+    size(){
+        return this.items.length;
+    }
+    print(){
+        return this.items.toString();
+    }
+}
+
+function hotPotato(nameList,num) {
+    let queue = new Queue();
+    for(let i=0;i<nameList.length;i++){
+        queue.enqueue(nameList[i]);
+    }
+    let eliminnated = '';
+    while (queue.size()>1){
+        for(let i=0;i<num;i++){
+            queue.enqueue(queue.dequeue());
+        }
+        eliminnated = queue.dequeue();
+        console.log(eliminnated + '在击鼓传花中淘汰');
+    }
+    return queue.dequeue();
+}
+let names = ['张1','李2','王3','赵4','张5','李6','王7','赵8'];
+let winner = hotPotato(names,3);
+console.log('胜利者是:'+winner);
+</script>
+</body>
+</html>

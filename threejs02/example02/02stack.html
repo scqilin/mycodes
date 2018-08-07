@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js栈</title>
+</head>
+<body>
+123
+<script type="text/javascript">
+    let decnum = [];
+    for(let i =0;i<10;i++){
+        decnum[i] = i;
+    }
+    console.log(decnum);
+   /* function Stack() {
+        this.items = [];
+        this.push = push;
+        this.pop = pop;
+        //this.peek = peek;
+        this.isEmpty = isEmpty;
+        //this.clear = clear;
+        //this.size = size;
+        //this.print = print;
+    }
+    function push(element) {
+        this.items.push(element);
+    }
+    function pop() {
+        return this.items.pop();
+    }
+    function isEmpty() {
+        return this.items.length == 0;
+    }*/
+   class Stack{
+       constructor(){
+           this.items = [];
+       }
+       push(element){
+           this.items.push(element);
+       }
+       pop(){
+           return this.items.pop();
+       }
+       isEmpty(){
+           return this.items.length == 0;
+       }
+   }
+    function divideBy2(decNumber,base) {
+        let remStack = new Stack();
+        let rem;
+        let binaryString = '';
+        let digits = '0123456789ABCDEF';
+        while (decNumber > 0){
+            rem = Math.floor(decNumber%base);
+            remStack.push(rem);
+            decNumber = Math.floor(decNumber/base);
+        }
+        while(!remStack.isEmpty()){
+            console.log('23');
+            binaryString += digits[remStack.pop()];
+
+        }
+        console.log(binaryString);
+        return binaryString;
+    }
+
+    divideBy2(23,12);
+    let dig = '0123456789ABCDEF';
+    console.log(dig[10]);
+</script>
+</body>
+</html>
