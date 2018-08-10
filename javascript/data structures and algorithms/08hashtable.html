@@ -2,9 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>散列表</title>
+    <title>散列表/哈希表</title>
+    <script src="datastructures.js"></script>
 </head>
 <body>
+<script type="text/javascript">
 
+    function HashTable() {
+        let table = [];
+        let ValuePair = function (key,value) {
+            this.key = key;
+            this.value = value;
+            this.toString = function () {
+                return '['+this.key+'-'+this.value+']';
+            }
+        };
+        let loseloseHashCode = function (key) {
+            let hash = 0;
+            for(let i=0;i<key.length;i++){
+                hash += key.charCodeAt(i);
+            }
+            return hash%5;
+        };
+        this.put = function (key, value) {
+            let position = loseloseHashCode(key);
+            //console.log(position+'-'+key+'-'+value);
+            if(table[position] === undefined){
+                 table[position] = new LinkedList();
+             }
+            table[position].append(new ValuePair(key,value));
+        };
+        this.get = function (key) {
+            let position = loseloseHashCode(key);
+            if(table[position] !== undefined){
+                let current = table[position].getHead();
+                while (current.next){
+                    if(current.element.key === key){
+                        return current.element.value;
+                    }
+                    current = current.next;
+                }
+                if(current.element.key === key){
+                    return current.element.value;
+                }
+            }
+            return undefined;
+        };
+        this.remove = function (key) {
+            let position = loseloseHashCode(key);
+            if(table[position] !== undefined){
+                let current = table[position].getHead();
+                while(current.next){
+                    if(current.element.key === key){
+                        table[position].remove(current.element);
+                        if(table[position].isEmpty()){
+                            table[position] = undefined;
+                        }
+                        return true;
+                    }
+                    current = current.next;
+                }
+                if(current.element.key === key){
+                    table[position].remove(current.element);
+                    if(table[position].isEmpty()){
+                        table[position] = undefined;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        };
+        this.print = function () {
+            for(let i = 0;i<table.length;++i){
+                if(table[i] !== undefined){
+                    console.log(i+':'+table[i]);
+                }
+            }
+        };
+        this.clear = function () {
+            table = [];
+        }
+    }
+
+    let hash1 = new HashTable();
+    hash1.clear();
+    hash1.put('1','天安门广场');hash1.put('7','上地');
+    hash1.put('2','菜市口');hash1.put('12','昌平');
+    hash1.put('4','西街');hash1.put('8','王府井');
+    hash1.put('17','西二旗');
+    hash1.print();
+    console.log('查找1：'+hash1.get('1'));
+    console.log('删除1：'+hash1.remove('1'));
+    hash1.print();
+
+    console.log('----clear----');
+    hash1.clear();
+    hash1.put('2','西直门');
+    hash1.print();
+</script>
 </body>
 </html>
