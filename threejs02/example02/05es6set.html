@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>es6中的Set类</title>
+</head>
+<body>
+<script type="text/javascript">
+    let set1 = new Set();
+    set1.add(1);
+    set1.add(2);
+    set1.add(3);
+    set1.add(4);set1.add('a');set1.add('b');
+    let values = set1.values();
+    for(let i=0;i<set1.size;i++){
+        console.log(values.next());
+    }
+    console.log(set1);
+    let set2 = new Set();
+    set2.add(2);
+    set2.add(3);
+    set2.add(4);
+    set2.add(5);
+    console.log(set2);
+    console.log(unionAB(set1,set2));
+
+    function unionAB(setA,setB) {
+        let setAB = new Set();
+        for(x of setA){
+            setAB.add(x);
+        }
+        for(x of setB){
+            setAB.add(x)
+        }
+        return setAB;
+    }
+    let intersection = function (setA,setB) {
+        let setAB = new Set();
+        for(let x of setA){
+            if(setB.has(x)){
+                setAB.add(x);
+            }
+        }
+        return setAB;
+    };
+    console.log(intersection(set1,set2));
+    let difference = function (set1, set2) {
+        let setAB = new Set();
+        for(let x of set1){
+            if(!set2.has(x)){
+                setAB.add(x);
+            }
+        }
+        return setAB;
+    };
+    let diff = difference(set1,set2);
+    console.log(diff);//怎么拼接字符串？ '差集'+diff
+    function subset(set1,set2) {
+        if(set1.size>set2.size){
+            return false;
+        }else{
+            for(let x of set1){
+                if(!set2.has(x)){
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    console.log(subset(set1,set2));
+</script>
+</body>
+</html>

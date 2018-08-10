@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js字典</title>
+</head>
+<body>
+<script type="text/javascript">
+    function Dictionary() {
+        let items = {};
+        this.has = function (key) {
+            return key in items;
+        };
+        this.set = function (key, value) {
+            items[key] = value;
+        };
+        this.delete = function (key) {
+            if(items.has(key)){
+                delete items[key];
+                return true;
+            }
+            return false;
+        };
+        this.get = function (key) {
+            return this.has(key) ? items[key] : undefined;
+        };
+        this.values = function () {
+            let values = [];
+            for(let k in items){
+                if(this.has(k)){
+                    values.push(items[k]);
+                }
+            }
+            return values;
+        };
+        this.clear = function () {
+            items = {};
+        };
+        this.size = function () {
+            let count = 0;
+            for(let k in items){
+                if(items.hasOwnProperty(k)){
+                    ++count;
+                }
+            }
+            return count;
+        };
+        this.key = function () {
+            return Object.keys(items);
+        };
+        this.getItems = function () {
+            return items;
+        }
+    }
+    let dic = new Dictionary();
+    dic.set('name1','张一');
+    dic.set('name2','张二');
+    dic.set('name3','张三');
+    dic.set('age','19');
+    console.log(dic.values());
+    console.log(dic.size());
+    console.log(dic.key());
+    console.log(dic);
+    console.log(dic.getItems());
+    console.log(dic.get('name1'));
+</script>
+</body>
+</html>
