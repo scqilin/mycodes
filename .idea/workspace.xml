@@ -14,11 +14,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="08hashtable.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="08hashtable.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/javascript/data structures and algorithms/08hashtable.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="30" column="51" lean-forward="false" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="51" />
+            <state relative-caret-position="240">
+              <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="09es6map.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/javascript/data structures and algorithms/09es6map.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="410">
+              <caret line="39" column="7" lean-forward="true" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -34,19 +44,28 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="03queuq.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/javascript/data structures and algorithms/03queuq.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="440">
+              <caret line="62" column="10" lean-forward="true" selection-start-line="62" selection-start-column="10" selection-end-line="62" selection-end-column="10" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="JavaScript File" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Helper</find>
       <find>position</find>
       <find>yz1</find>
       <find>CC</find>
@@ -76,6 +95,7 @@
       <find>faces</find>
       <find>quaternion</find>
       <find>Orth</find>
+      <find>clear</find>
     </findStrings>
     <replaceStrings>
       <replace>scene</replace>
@@ -90,8 +110,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="D:/WebGL学习教程/learning-threejs-master/learning-threejs-master/chapter-08/07-load-obj-mtl.html" />
-        <option value="$PROJECT_DIR$/webgl/canvasdian.html" />
         <option value="$PROJECT_DIR$/threejs/js/js/three.js" />
         <option value="$PROJECT_DIR$/threejs/index.html" />
         <option value="$PROJECT_DIR$/threejs/cube1.html" />
@@ -141,6 +159,8 @@
         <option value="$PROJECT_DIR$/javascript/data structures and algorithms/04linkedlist.html" />
         <option value="$PROJECT_DIR$/javascript/data structures and algorithms/datastructures.js" />
         <option value="$PROJECT_DIR$/javascript/data structures and algorithms/08hashtable.html" />
+        <option value="$PROJECT_DIR$/javascript/data structures and algorithms/09es6map.html" />
+        <option value="$PROJECT_DIR$/javascript/data structures and algorithms/03queuq.html" />
       </list>
     </option>
   </component>
@@ -156,7 +176,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="160" />
     <option name="height" value="39" />
   </component>
@@ -316,12 +336,12 @@
       <workItem from="1533609384587" duration="8422000" />
       <workItem from="1533721408194" duration="2541000" />
       <workItem from="1533807818860" duration="15230000" />
-      <workItem from="1533865666535" duration="10637000" />
+      <workItem from="1533865666535" duration="16918000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="486450000" />
+    <option name="totallyTimeSpent" value="492731000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -333,7 +353,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="754" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1830161" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -370,20 +390,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/threejs/examples/example03.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-15">
-          <caret line="26" column="56" lean-forward="false" selection-start-line="26" selection-start-column="43" selection-end-line="26" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/threejs/examples/example04.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1629">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/threejs/examples/example05.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2340">
@@ -659,14 +665,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/javascript/data structures and algorithms/03queuq.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1320">
-          <caret line="44" column="28" lean-forward="false" selection-start-line="44" selection-start-column="28" selection-end-line="44" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.dom.d.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
@@ -724,8 +722,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/javascript/data structures and algorithms/08hashtable.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="30" column="51" lean-forward="false" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="51" />
+        <state relative-caret-position="240">
+          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.es6.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="4635" column="1" lean-forward="true" selection-start-line="4635" selection-start-column="1" selection-end-line="4635" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/javascript/data structures and algorithms/09es6map.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="39" column="7" lean-forward="true" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/javascript/data structures and algorithms/03queuq.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="62" column="10" lean-forward="true" selection-start-line="62" selection-start-column="10" selection-end-line="62" selection-end-column="10" />
           <folding />
         </state>
       </provider>

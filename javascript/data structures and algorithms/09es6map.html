@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ES6map</title>
+</head>
+<body>
+
+<script type="text/javascript">
+    let map = new Map();
+    map.set('a','北京');
+    map.set('b','天津');
+    map.set('C','江西');
+    console.log(map);
+    console.log(map.values());
+    /*let values = map.values();
+    let keys = map.keys();
+    for( let i = 0;i<map.size;i++){
+        //不能循环中用map.values()，会每次重新执行得到的都是第一个值
+        console.log(keys.next().value);
+        console.log(values.next().value);
+    }*/
+    console.log('---------------');
+    //这种方式也可以
+    for(let v of map.values()) console.log(v);
+    for(let k of map.keys()) console.log(k);
+    console.log('---------------');
+    map.forEach(function (v,k) {
+        console.log(k+'--'+v);
+    });
+    console.log('---------------');
+    map.delete('a');
+    console.log(map);
+    console.log('---------------');
+    map.clear();
+    console.log(map);
+    console.log('---------------');
+</script>
+</body>
+</html>
