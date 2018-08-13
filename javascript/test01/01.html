@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JavaScript 事件流、事件处理程序</title>
+</head>
+<body>
+    <div>
+        <input type="button" value="按钮" id="but1">
+        <input type="button" value="添加事件" id="but2">
+        <input type="button" value="删除事件" id="but3">
+    </div>
+    <script type="text/javascript">
+       var eventUtil={
+           addHeadle:function(element,type,handler){
+               if(element.addEventlistener){
+                    element.addEventlistener(type,handler,false);
+               }else if(element.attachEvent){
+                   element.attachEvent('on'+type,handler);
+               }else{
+                    element['on'+type] = handler;
+               }
+           },
+           removeHeadle:function(element,type,handler){
+               if(element.removeEventlistener){
+                    element.removeEventlistener(type,handler,false);
+               }else if(element.detachEvent){
+                   element.detachEvent('on'+type,handler);
+               }else{
+                    element['on'+type] = null;
+               }
+           }
+       }
+       var but1 = document.getElementById('but1');
+       var but2 = document.getElementById('but2');
+       var but3 = document.getElementById('but3');
+       eventUtil.addHeadle(but2,'click',addevent);
+       eventUtil.addHeadle(but3,'click',removeevent);
+       function addevent(){
+        eventUtil.addHeadle(but1,'click',hello);
+       }
+       function removeevent(){
+        eventUtil.removeHeadle(but1,'click',hello);
+       }
+       function hello(){
+           alert("Hello");
+       }
+    </script>
+</body>
+</html>
