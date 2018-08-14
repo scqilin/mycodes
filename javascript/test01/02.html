@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="day">
+        <ul id="ul1"></ul>
+    </div>
+    <script type="text/javascript">
+        var day = ['周一','周二','周三','周四','周五','周六','周日'];
+        var ul1 = document.getElementById('ul1');
+        for(var i=8;i<=31;i++){
+            var li = document.createElement("li");
+            li.style.listStyle = 'none';
+            li.innerHTML = '8.'+i+' '+day[(i+1)%7];
+            ul1.appendChild(li);
+        }
+    </script>
+</body>
+</html>
