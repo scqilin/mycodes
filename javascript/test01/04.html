@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        #div1 {
+            width: 200px;
+            height: 50px;
+            background: #ff0000;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+        #div2 {
+            width: 200px;
+            height: 50px;
+            background: #01c56a;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+        #div3 {
+            width: 200px;
+            height: 50px;
+            background: #cc00ff;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="div1"></div>
+    <div id="div2"></div>
+    <div id="div3"></div>
+    <script type="text/javascript">
+        var div1 = document.getElementById('div1'),
+            div2 = document.getElementById('div2'),
+            div3 = document.getElementById('div3');
+        var timer;
+        div1.onmouseover = function () {
+            movelang(this, function () {
+
+            });
+        }
+        div1.onmouseout = function () {
+            movesamll(this);
+        }
+        /*  div2.onmouseover = function () {
+             movelang(this);
+         }
+         div2.onmouseout = function(){
+             movesamll(this);
+         }
+         div3.onmouseover = function () {
+             movelang(this);
+         }
+         div3.onmouseout = function(){
+             movesamll(this);
+         } */
+
+        function movelang(e,fn) {
+            var thisdiv = e;
+            clearInterval(thisdiv.timer);
+            thisdiv.timer = setInterval(function () {
+                if (thisdiv.clientWidth >= 400) {
+                    clearInterval(thisdiv.timer);
+                    if (fn) {
+                        console.log('s');
+                        alert('22222');
+                    }
+                } else {
+                    thisdiv.style.width = thisdiv.clientWidth + 2 + 'px';
+                }
+
+            }, 10);
+           
+
+        }
+        function movesamll(e) {
+            var thisdiv = e;
+            clearInterval(thisdiv.timer);
+            thisdiv.timer = setInterval(function () {
+                if (thisdiv.clientWidth <= 200) {
+                    clearInterval(thisdiv.timer);
+                } else {
+                    thisdiv.style.width = thisdiv.clientWidth - 2 + 'px';
+                }
+
+            }, 10);
+        }
+
+
+    </script>
+</body>
+
+</html>
