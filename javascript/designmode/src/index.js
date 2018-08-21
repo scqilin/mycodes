@@ -1,25 +1,42 @@
-import { readonly } from 'core-decorators'
-import { deprecate } from 'core-decorators'
-//引用类库 就不需要自己再定义了
-class Person {
-    @readonly
-    name() {
-        return '张三'
+//观察者模式  发布订阅
+//主题 保存状态，状态变化 触发
+class Subject{
+    constructor(){
+        this.state = 0
+        this.observers = []
+    }
+    getState(){
+        return this.state
+    }
+    setState(state){
+        this.state = state
+        this.notifyAllObserves()
+    }
+    notifyAllObserves(){
+        this.observers.forEach(observer => {
+            observer.update()
+        })
+    }
+    attact(observer){
+        this.observers.push(observer)
     }
 }
-let p = new Person
-console.log(p.name())
-//p.name = function(){} //会报错 只读模式
+//观察者
+class Observer{
+    constructor(name,subject){
+        this.name = name
+        this.subject = subject
+        this.subject.attact(this)
+    }
+    update(){
+        console.log(`${this.name} update,state:${this.subject.getState()}`)
+    }
+}
 
-class People {
-    // 打印默认提示内容：DEPRECATION People#name: This function will be removed in future versions.
-    // @deprecate() 
-    //  也打印自定义的内容：DEPRECATION People#name: 该方法即将弃用
-    //  See https://github.com/jayphelps/core-decorators for more details.
-    @deprecate('该方法即将弃用',{url:'https://github.com/jayphelps/core-decorators'})
-    name() {
-        return '李四'
-    }
-}
-let peo = new People();
-peo.name()
+let s = new Subject()
+let o1 = new Observer('o1',s)
+let o2 = new Observer('o2',s) 
+let o3 = new Observer('o3',s)
+s.setState(1)
+s.setState(2)
+console.log(s.observers)
