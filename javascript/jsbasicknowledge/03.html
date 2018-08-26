@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ES5数组对象api</title>
+</head>
+
+<body>
+    <script>
+       
+        var arr = [2,5,4,7,3,1,6]
+        console.log('arr',arr)
+        arr.forEach(function(v,k){
+            console.log(v,k)
+        })
+        // every 所有的元素满足同一个条件
+        var result = arr.every(function(v,k){
+            if(v<6){
+                return true
+            }
+        })
+        console.log(result)
+        // some 只要有一个元素满足条件
+        var results = arr.some(function(v,k){
+            if(v<3){
+                return true
+            }
+        })
+        console.log(results)
+        // sort 排序 会改变原来数组
+        var arr2 = arr.sort(function(a,b){
+            return a-b   // 从小到大
+            //return b-a  //从大到小
+        })
+        console.log('arr2',arr2)
+        //map
+        var arr3 = arr.map(function(v,k){
+            return '<b>'+v+'</b>'
+        })
+        console.log(arr3)
+        console.log('arr',arr)
+
+        //过滤
+        var arr4 = arr.filter(function(v,k){
+            if(v >= 3){
+                return true
+            }
+        })
+        console.log('arr4',arr4)
+
+        //对象
+        var obj = {
+            x:100,
+            y:300,
+            z:200
+        }
+        for(var k in obj){
+            if(obj.hasOwnProperty(k)){
+                console.log(k,obj[k])
+            }
+        }
+
+    </script>
+</body>
+
+</html>

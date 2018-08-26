@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>异步和单线程</title>
+</head>
+
+<body>
+    <script>
+        console.log(1)
+        setTimeout(function () {
+            //console.log(2)
+        }, 0)
+        console.log(3)
+        setTimeout(function () {
+            //console.log(4)
+        }, 1000)
+        console.log(5)
+        //alert(6)
+        console.log(7)
+
+
+        //时间api
+        console.log(Date.now())
+        var dt = new Date()
+        console.log(dt)
+        console.log(dt.getTime()) //获取毫秒
+        console.log('年', dt.getFullYear())
+        console.log('月', dt.getMonth() + 1) // 0-11 
+        console.log('日', dt.getDate())
+        console.log('时', dt.getHours())
+        console.log('分', dt.getMinutes())
+        console.log('秒', dt.getSeconds())
+
+        console.log(Date.now())  //实时变化的
+        console.log(dt.getTime()) //dt的值不会变化了
+        var y = dt.getFullYear()
+        var m = dt.getMonth() + 1
+        var m1 = m < 10 ? ('0' + m) : m
+        var d = dt.getDate()
+        console.log(y + '-' + m1 + '-' + d)
+        // 指定长度的数字字符串 
+        function stringNumber(n) {
+            var str = Math.random().toString()
+            console.log(str)
+            return str.substring(2, n + 2)
+        }
+        console.log(stringNumber(5))
+
+        // forEach
+        console.log('---foreach---')
+        var a1 = ['a', 'b', 'c', 'd', 'e']
+        var a2 = { a: 'Aiso', b: 'Biop', c: 'Cili' }
+        console.log(a1.__proto__ === Object.prototype)
+        function forEach(a) {
+            if (a.__proto__ === Array.prototype) {
+                a.forEach(function (v, k) {
+                    console.log(v, k)
+                })
+            }
+            if (a.__proto__ === Object.prototype) {
+                for (var k in a) {
+                    if (a.hasOwnProperty(k)) {
+                        console.log(k, a[k])
+                    }
+                }
+            }
+        }
+        forEach(a1)
+        forEach(a2)
+
+    </script>
+</body>
+
+</html>
