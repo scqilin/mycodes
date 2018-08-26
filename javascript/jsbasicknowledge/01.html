@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>原型链继承</title>
+</head>
+<body>
+    <div id="div1">1111</div>
+    <div id="div2">2222</div>
+    <div id="div3">3333</div>
+    <script>
+        function Elem(id){
+            this.elem = document.getElementById(id)
+            return this
+        }
+        Elem.prototype.setHtml = function(val){
+            var elem = this.elem
+            if(val){
+                elem.innerHTML = val
+                return this  //链式操作
+            }else{
+                return elem.innerHTML //如果不返回 div1就会变成undefined
+            }
+            
+        }
+        Elem.prototype.on = function(type,fn){
+            var elem = this.elem
+            elem.addEventListener(type,fn)
+            return this
+        }
+        
+        var div1 = new Elem('div1')
+        // 使用 return this 可以使用链式操作. . 
+        div1.setHtml('<p>12345abc</p>').on('click',function(){
+            console.log('onclick')
+        }).setHtml('ononon')
+
+        // 自定义原型
+        function Animal(){
+            this.eat = function(){
+                console.log('animal eat')
+            }
+        }
+        function Dog(){
+            this.brak = function(){
+                console.log('dog bark')
+            }
+        }
+
+        Dog.prototype = new Animal()
+        var dog = new Dog()
+        console.log(dog)
+
+
+        function F1(){
+            var a = 100
+            return function(){
+                console.log(a)
+            }
+            
+        }
+        var f1 = F1()
+        var a =200
+        f1()
+        F1()()
+
+    </script>
+</body>
+</html>
