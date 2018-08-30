@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #div0 {
+            width: 90%;
+            height: 350px;
+            margin: 0 auto;
+            text-align: center;
+            line-height: 10px;
+        }
+
+        #div2 {
+            font-size: 24px;
+            padding: 2
+        }
+
+        #div4 {
+            font-size: 20px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="div0">
+        <div id="div1">
+            <div id="div2" class="di1">
+                <p>画</p>
+            </div>
+            <div id="div3" class="di2">王维</div>
+        </div>
+        <div id="div4">
+            <p>远看山有色，</p>
+            <p>近听水无声。</p>
+            <p>春去花还在，</p>
+            <p>人来鸟不惊。</p>
+        </div>
+    </div>
+    <script>
+        var div0 = document.getElementById('div0')
+        var div3 = document.getElementById('div3')
+        var div4 = document.getElementById('div4')
+        div0.style.background = '#ff0099'
+        console.log(div0.childNodes)
+
+        var p = document.getElementsByTagName('p')
+        console.log(p[0])
+        div4.appendChild(p[1])
+
+        var p1 = document.createElement('div')
+        p1.innerHTML = 'divdivdiv'
+        div4.appendChild(p1)
+
+        var ua = navigator.userAgent
+        console.log(ua)
+        console.log(screen)
+        console.log(location)
+
+        // div4.addEventListener('click',function(){
+        //     console.log('clickeddiv4')
+        // })
+        
+        function addEvent(elem,type,fn){
+            elem.addEventListener(type,fn)
+        }
+        addEvent(div4,'click',function(e){
+            var target = e.target
+            if(target.nodeName === 'P'){
+                console.log(target.innerHTML)
+            }            
+        })
+
+    </script>
+</body>
+
+</html>
