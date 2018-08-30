@@ -17,7 +17,7 @@ development模式不会压缩代码  production模式会压缩代码
 "start": "webpack --mode production"
 
 项目移植备份：把项目移植到其他电脑或者系统中去。
-只要文件夹中有webpack.config.js文件。运行“npm install” 命令系统会自动下载相应的依赖包。
+只要文件夹中有package.json文件。运行“npm install” 命令系统会自动下载相应的依赖包。
 在移植备份中除了node_modules文件夹。其他的文件都需要拷贝。
 node_modules文件是安装依赖包时候自动生成的，而且window和Linux系统编译生成的文件不一样，所以拷贝这个文件夹是没有用的，而且文件众多，拷贝也浪费时间。
 项目使用git的时候，也要忽略这个文件夹。
