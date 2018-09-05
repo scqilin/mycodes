@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>three.js迷宫</title>
+    <script type="text/javascript" src="../js/three96.js"></script>
+    <script type="text/javascript" src="../js/Detector.js"></script>
+    <script type="text/javascript" src="../js/controls/OrbitControls.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+            overflow: hidden
+        }
+    </style>
+</head>
+
+<body>
+    <div id="webgl-output"></div>
+    <script type="text/javascript">
+        if (!Detector.webgl) Detector.addGetWebGLMessage();
+        function init() {
+            var scene, camera, renderer, light, controls;
+            var clock = new THREE.Clock();
+
+            drawScene();
+
+            function drawScene() {
+                iniScene();
+                iniLight();
+                orbitControls();
+                windowResize();
+                maze()
+                // iniPlane();
+                render();
+            }
+            // maze
+            var group1 = new THREE.Object3D();
+
+            function maze() {
+                var a = [], b = [], c = [], d = [];
+                var xnum = 0, znum = 0;
+                for (var i = -8; i < 8; i++) {
+                    for (var j = -8; j < 8; j++) {
+                        // linexD(i*4+2,j*4) ;
+                        a[xnum] = i * 4 + 2;
+                        b[xnum] = j * 4;
+                        xnum ++;
+                    }
+                }
+                //console.log(b)
+                for (var i = 0; i < 220; i++) {
+                    var nn = Math.round(Math.random() * 256)
+                    linexD(a[nn], b[nn]);
+                }
+
+                for (var i = -8; i < 9; i++) {
+                    for (var j = -8; j < 7; j++) {
+                        // linezD(i * 4, j * 4 + 2);
+                        c[znum] = i * 4 ;
+                        d[znum] = j * 4 + 2;
+                        znum ++;
+                    }
+                }
+                //console.log(c)
+                for (var i = 0; i < 220; i++) {
+                    var nnz = Math.round(Math.random() * 255)
+                    linezD(c[nnz], d[nnz]);
+                }
+                // console.log(scene.children) //4-444
+            }
+            //场景
+            function iniScene() {
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+                renderer = new THREE.WebGLRenderer();
+                camera.position.set(0, 100, 0);
+                camera.lookAt(scene.position);
+                renderer.setClearColor(0x333333);
+                //renderer.shadowMap.enabled = true;
+
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                scene.add(new THREE.AxesHelper(4));
+                document.getElementById('webgl-output').appendChild(renderer.domElement);
+            }
+            //灯光
+            function iniLight() {
+                light = new THREE.AmbientLight(0x333333);
+                scene.add(light);
+
+                light = new THREE.SpotLight(0x888888);
+                light.position.set(0, 40, 0);
+                // light.castShadow = true;
+                // light.shadow.mapSize.height = 4096;
+                // light.shadow.mapSize.width = 4096;
+                scene.add(light);
+
+                light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+                light.position.set(0, 200, 0);
+                scene.add(light);
+            }
+            //地面 和 辅助网格
+            function iniPlane() {
+                var planeGeo = new THREE.PlaneGeometry(100, 100);
+                var planeMat = new THREE.MeshPhongMaterial({ color: 0x999999 });
+                var plane = new THREE.Mesh(planeGeo, planeMat);
+                // plane.receiveShadow = true;
+                plane.position.y = -0.01;
+                plane.rotation.x = -0.5 * Math.PI;
+                scene.add(plane);
+
+                var grid = new THREE.GridHelper(100, 50, 0x000000, 0x000000);
+                grid.material.transparent = true;
+                grid.material.opacity = 0.3;
+                // scene.add(grid);
+            }
+            //x轴 墙体
+            function linexD(x, z) {
+                var cubeGeo = new THREE.BoxGeometry(4, 4, 0.2);
+                var cubeMat = new THREE.MeshPhongMaterial({
+                    color: 0xfff000 * Math.random(),
+                });
+                var cube = new THREE.Mesh(cubeGeo, cubeMat);
+                cube.position.set(x, 2, z);
+                // cube.castShadow = true;
+                scene.add(cube);
+                return cube;
+            }
+            //z轴 墙体
+            function linezD(x, z) {
+                var cubeGeo = new THREE.BoxGeometry(0.2, 4, 4);
+                var cubeMat = new THREE.MeshPhongMaterial({
+                    color: 0xfff000 * Math.random(),
+                });
+                var cube = new THREE.Mesh(cubeGeo, cubeMat);
+                cube.position.set(x, 2, z);
+                // cube.castShadow = true;
+                scene.add(cube);
+                return cube;
+            }
+            //相机轨道控制器
+            function orbitControls() {
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                //自转
+                //controls.autoRotate = true;
+                //controls.autoRotateSpeed = 0.2;
+                //阻尼 阻尼系数
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.4;
+                //缩放
+                controls.enableZoom = true;
+                controls.minDistance = 5;
+                controls.maxDistance = 100;
+                //右键拖拽
+                controls.enablePan = true;
+                //controls.minPolarAngle = Math.PI/2; // radians
+                //controls.maxPolarAngle = Math.PI/2; // radians
+            }
+            //改变窗口大小
+            function windowResize() {
+                window.addEventListener('resize', onWindowResize, false);
+                function onWindowResize() {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                }
+            }
+            //渲染动画
+            function render() {
+                var delta = clock.getDelta();
+                requestAnimationFrame(render);
+                renderer.render(scene, camera);
+                controls.update(delta); //不能在里面写clock.getDelta()
+                // var rou = Math.round(Math.random() * 440 + 5)
+                // scene.children[rou].rotation.y += Math.PI/2
+                
+            }
+
+        }
+        window.onload = init;
+
+    </script>
+</body>
+
+</html>

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>three.js基本框架</title>
     <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/physi.js"></script>
+    <script type="text/javascript" src="../js/physijs_worker.js"></script>
+    <script type="text/Javascript" src="../js/libs/ammo.js"></script>
     <script type="text/javascript" src="../js/Detector.js"></script>
-    <script src="../js/lights/RectAreaLightUniformsLib.js"></script>
     <script type="text/javascript" src="../js/controls/OrbitControls.js"></script>
     <style type="text/css">
         body{margin: 0;overflow: hidden}
@@ -33,7 +35,8 @@
         }
         //场景
         function iniScene() {
-            scene = new THREE.Scene();
+            //scene = new THREE.Scene();
+            
             camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
             renderer = new THREE.WebGLRenderer();
             camera.position.set(-30,30,30);
@@ -80,7 +83,7 @@
         function cubeDr(a,x,y,z) {
             var cubeGeo = new THREE.BoxGeometry(a,a,a);
             var cubeMat = new THREE.MeshPhongMaterial({
-                color:0xfff000*Math.random()
+                color:0xfff000*Math.random(),
             });
             var cube = new THREE.Mesh(cubeGeo,cubeMat);
             cube.position.set(x,y,z);
@@ -93,8 +96,8 @@
         function orbitControls() {
             controls = new THREE.OrbitControls(camera,renderer.domElement);
             //自转
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 0.2;
+            //controls.autoRotate = true;
+            //controls.autoRotateSpeed = 0.2;
             //阻尼 阻尼系数
             controls.enableDamping = true;
             controls.dampingFactor = 0.4;
@@ -103,7 +106,9 @@
             controls.minDistance = 5;
             controls.maxDistance = 100;
             //右键拖拽
-            controls.enablePan = false;
+            controls.enablePan = true;
+            //controls.minPolarAngle = Math.PI/2; // radians
+            //controls.maxPolarAngle = Math.PI/2; // radians
         }
         //改变窗口大小
         function windowResize() {
