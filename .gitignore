@@ -2,5 +2,6 @@
 .idea/workspace.xml
 .idea
 javascript/designmode/node_modules
+es6threejs/node_modules
 .vscode
 
