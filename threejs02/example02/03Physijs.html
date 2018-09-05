@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>three.js基本框架</title>
+    <title>Physi.js</title>
     <script type="text/javascript" src="../js/three.js"></script>
     <script type="text/javascript" src="../js/physi.js"></script>
-    <script type="text/javascript" src="../js/physijs_worker.js"></script>
-    <script type="text/Javascript" src="../js/libs/ammo.js"></script>
     <script type="text/javascript" src="../js/Detector.js"></script>
     <script type="text/javascript" src="../js/controls/OrbitControls.js"></script>
     <style type="text/css">
@@ -25,18 +23,21 @@
 
         function drawScene() {
             iniScene();
-            iniLight();
-            orbitControls();
-            windowResize();
-            cubeDr(4,0,2,0);
-            cubeDr(2,0,5,0);
-            iniPlane();
-            render();
+            // iniLight();
+            // orbitControls();
+            // windowResize();
+            // cubeDr(4,0,2,0);
+            // cubeDr(2,0,5,0);
+            // iniPlane();
+            // render();
         }
         //场景
         function iniScene() {
             //scene = new THREE.Scene();
-            
+            Physijs.scripts.worker = '../js/physijs_worker.js';
+            Physijs.scripts.ammo = '../js/ammo.js';
+            scene = new Physijs.Scene();
+            scene.setGravity(new THREE.Vector3(0,-10,0));
             camera = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
             renderer = new THREE.WebGLRenderer();
             camera.position.set(-30,30,30);
@@ -80,12 +81,13 @@
             scene.add( grid );
         }
         //立方体
-        function cubeDr(a,x,y,z) {
-            var cubeGeo = new THREE.BoxGeometry(a,a,a);
+        function cubeDr(a,b,c,x,y,z) {
+            var cubeGeo = new THREE.BoxGeometry(a,b,c);
             var cubeMat = new THREE.MeshPhongMaterial({
                 color:0xfff000*Math.random(),
             });
-            var cube = new THREE.Mesh(cubeGeo,cubeMat);
+            // var cube = new THREE.Mesh(cubeGeo,cubeMat);
+            var cube = new Physijs.BoxMesh(cubeGeo,cubeMat);
             cube.position.set(x,y,z);
             cube.castShadow = true;
             scene.add(cube);
