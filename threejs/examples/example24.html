@@ -71,7 +71,7 @@
     }
 
     function createCubeMap() {
-        var path = "textures/parliament/";
+        var path = "../textures/parliament/";
         var format = '.jpg';
         var urls = [
             path + 'posx' + format, path + 'negx' + format,
@@ -85,7 +85,7 @@
     function creatcube(x,y,z,len) {
         var cubeme = new THREE.BoxGeometry(len,len,len);
         var cubemer = new THREE.MeshPhongMaterial();
-        var texture = new THREE.ImageUtils.loadTexture("textures/223.jpg");
+        var texture = new THREE.ImageUtils.loadTexture("../textures/223.jpg");
         cubemer.map = texture;  //纹理贴图
         cubemer.bumpMap = texture; //凹凸贴图
         cubemer.bumpScale = 0.2;

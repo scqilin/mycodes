@@ -33,7 +33,7 @@
 
     var mesh;
     var loader = new THREE.OBJLoader();
-    loader.load('models/city.obj', function (loadedMesh) {
+    loader.load('../models/city.obj', function (loadedMesh) {
         var material = new THREE.MeshLambertMaterial({color: '#eee1f2'});
         console.log(loadedMesh);
         loadedMesh.children.forEach(function (child) {

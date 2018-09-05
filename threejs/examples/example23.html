@@ -40,7 +40,7 @@
 
         var spheregem = new THREE.SphereGeometry(4,80,80);
         var spheremer = new THREE.MeshPhongMaterial();
-        var spherever = new THREE.ImageUtils.loadTexture("textures/Earth.png");
+        var spherever = new THREE.ImageUtils.loadTexture("../textures/Earth.png");
         spheremer.map = spherever;
         spheremer.bumpMap = spherever;
         spheremer.bumpScale = 0.4;
@@ -69,7 +69,7 @@
         var cubeme = new THREE.BoxGeometry(len,len,len);
         var cubemer = new THREE.MeshPhongMaterial();    //phong 可以同时使用纹理贴图和凹凸贴图
         //var cubemer = new THREE.MeshLambertMaterial(); //lambert 不能使用凹凸贴图
-        var texture = new THREE.ImageUtils.loadTexture("textures/223.jpg");
+        var texture = new THREE.ImageUtils.loadTexture("../textures/223.jpg");
         cubemer.map = texture;  //纹理贴图
         cubemer.bumpMap = texture; //凹凸贴图
         cubemer.bumpScale = 0.8;

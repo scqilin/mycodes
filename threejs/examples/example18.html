@@ -27,7 +27,7 @@
 
     var mesh;
     var loader = new THREE.OBJMTLLoader();
-    loader.load('models/duck/duck.obj','models/duck/duck.obj.mtl', function (loadedMesh) {
+    loader.load('../models/duck/duck.obj','../models/duck/duck.obj.mtl', function (loadedMesh) {
         mesh = loadedMesh;
         loadedMesh.scale.set(0.015, 0.015, 0.015);
         // loadedMesh.rotation.x =  -0.5*Math.PI;
