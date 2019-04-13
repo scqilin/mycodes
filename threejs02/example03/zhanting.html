@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>2-1three.js FBX动画场景搭建</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #000;
+            color: #fff;
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        #info {
+            color: #fff;
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            display: block;
+        }
+
+        #info a {
+            color: #046;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="info">
+        <a href="" target="_blank" rel="noopener">three.js</a> - FBXLoader
+    </div>
+
+    <script src="../js/three.js"></script>
+    <script src="../js/loaders/GLTFLoader.js"
+    <script src="../js/controls/OrbitControls.js"></script>
+    <script src="../js/Detector.js"></script>
+
+    <script>
+
+        if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+        var container, controls;
+        var camera, scene, renderer, light;
+        var clock = new THREE.Clock();
+        var mixers = [];
+        init();
+        animate();
+
+        function init() {
+
+            container = document.createElement('div');
+            document.body.appendChild(container);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 200000);
+            camera.position.set(100, 200, 300);
+
+            controls = new THREE.OrbitControls(camera);
+            controls.target.set(0, 100, 0);
+            controls.update();
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xa0a0a0);
+            // scene.fog = new THREE.Fog(0xa0a0a0, 200, 1000);
+
+            light = new THREE.HemisphereLight(0xffffff, 0x444444);
+            light.position.set(0, 200, 0);
+            scene.add(light);
+
+            light = new THREE.DirectionalLight(0xffffff);
+            light.position.set(0, 200, 100);
+            light.castShadow = true;
+            light.shadow.camera.top = 180;
+            light.shadow.camera.bottom = -100;
+            light.shadow.camera.left = -120;
+            light.shadow.camera.right = 120;
+            scene.add(light);
+
+            // scene.add( new THREE.CameraHelper( light.shadow.camera ) );
+
+            // ground
+            var mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2000, 2000), new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false }));
+            mesh.rotation.x = - Math.PI / 2;
+            mesh.receiveShadow = true;
+            scene.add(mesh);
+
+            var grid = new THREE.GridHelper(2000, 20, 0x000000, 0x000000);
+            grid.material.opacity = 0.2;
+            grid.material.transparent = true;
+            scene.add(grid);
+
+            // model
+            var modelNames = [];
+            var loader = new THREE.FBXLoader();
+            loader.load('mode/zhanting.fbx', function (object) {
+                object.traverse(function (child) {
+
+                    if (child.isMesh) {
+
+                        modelNames.push(child.name);
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                        child.material.side = THREE.DoubleSide;
+                        // child.material.color.set(0xFFFFFF*Math.random());
+                    }
+
+                });
+                scene.add(object);
+                console.log(object);
+                
+                var name = modelNames[11]  
+                console.log(name)
+                // scene.getObjectByName(name).material.color.set(0xFF0000);
+                scene.getObjectByName(modelNames[12]  ).material.color.set(0xFFFF00);
+                console.log(modelNames)
+                
+            });
+            
+            var namess = {
+                "沙发":     "Archinteriors_024_010_23", //0
+                "沙发腿":   "Archinteriors_024_010_24", // 1 2 Archinteriors_024_010_25 
+                "墙体1":    "Archinteriors_024_010_17",  //5
+                "墙体方格" :"Archinteriors_024_010_08", //6
+                "方格框子":"Archinteriors_024_010_11", //7
+                "方格":"Archinteriors_024_010_12", //8
+                "顶和柱子":"Archinteriors_024_010_18",//9
+                "画框":"Archinteriors_024_010_14", //10
+                "顶和柱子2":"Archinteriors_024_010_15", //11
+                "顶和柱子3":"Archinteriors_024_010_19", //12
+                "顶和柱子4":"Archinteriors_024_010_22", //13
+                "顶和柱子5":"Archinteriors_024_010_16",//
+                "地面":"Archinteriors_024_010_22",//15
+                "天窗":"Archinteriors_024_010_05",//16
+                "方格框子1":"Archinteriors_024_010_06",//17
+                "方格框子2":"Archinteriors_024_010_07",//18
+                "顶和柱子6":"Archinteriors_024_010_09",//19
+                "沙发1":"Archinteriors_024_010_20",//20
+                "沙发腿1":"Archinteriors_024_010_21",//21
+                "沙发腿2":"Archinteriors_024_010_22",//22
+                
+
+            }
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            window.addEventListener('resize', onWindowResize, false);
+
+
+
+        }
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        //
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+
+
+            renderer.render(scene, camera);
+
+
+        }
+
+    </script>
+
+</body>
+
+</html>

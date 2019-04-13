@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta changePosrset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>贪吃蛇</title>
+    <script type="text/javascript" src="../js/three.js"></script>
+    <script type="text/javascript" src="../js/libs/stats.min.js"></script>
+    <script type="text/javascript" src="../js/controls/OrbitControls.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+            overflow: hidden;
+            color: #FF0000;
+            font-family: Monospace;
+            font-size: 23px;
+            text-align: center;
+
+        }
+
+        #score {
+            position: absolute;
+            top: 5px;
+            width: 100%;
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="webgl-output"></div>
+    <div id="score"></div>
+    <script type="text/javascript">
+
+        function init() {
+            let frustumSize = 65;
+
+            let scene, camera, renderer, light, controls;
+            let clock = new THREE.Clock();
+            // let state = new Stats();
+            let cubes = [];
+            let headx = 0, headz = 0;
+            let endx = 0;
+            let endz = 0;
+            let food
+            let cr = 1, cg = 0.1, cb = 0.7
+            let key = 'bigen', lastKey = 'nul';
+
+            // document.body.appendChild(state.domElement);
+            drawScene();
+
+            function drawScene() {
+                iniScene();
+                iniLight();
+                // orbitControls();
+                windowResize();
+                cubes.push(cubeDr(1, 1 / 2, 1 / 2, 1 / 2));
+                food = sphereDr(1 / 2, 3 + 0.5, 0.5, 3 + 0.5);
+                console.log(food.position, headx, headz)
+                iniPlane();
+                render();
+
+                let setInt = setInterval(() => {
+                    if (cubes.length < 1) return
+                    if (key == 'w') {
+                        if (lastKey == 's') {
+                            s();
+                        } else {
+                            w();
+                        }
+
+                    } else if (key == 's') {
+                        if (lastKey == 'w') {
+                            w();
+                        } else {
+                            s();
+                        }
+
+                    } else if (key == 'a') {
+                        if (lastKey == 'd') {
+                            d();
+                        } else {
+                            a();
+                        }
+
+                    } else if (key == 'd') {
+                        if (lastKey == 'a') {
+                            a();
+                        } else {
+                            d();
+                        }
+                    } else {
+                        nul();
+                    }
+                    function nul() {
+                        changePos(cubes);
+                        cubes[0].position.z -= 1;
+                        headz = cubes[0].position.z;
+                        eating();crashSelf();
+                    }
+                    function w() {
+                        changePos(cubes);
+                        cubes[0].position.z -= 1;
+                        headz = cubes[0].position.z;
+                        eating();crashSelf();
+                        lastKey = "w";
+                    }
+                    function s() {
+                        changePos(cubes)
+                        cubes[0].position.z += 1;
+                        headz = cubes[0].position.z;
+                        eating();crashSelf();
+                        lastKey = "s"
+                    }
+                    function a() {
+                        changePos(cubes)
+                        cubes[0].position.x -= 1;
+                        headx = cubes[0].position.x;
+                        eating();crashSelf();
+                        lastKey = "a"
+                    }
+                    function d() {
+                        changePos(cubes)
+                        cubes[0].position.x += 1;
+                        headx = cubes[0].position.x;
+                        eating();crashSelf();
+                        lastKey = "d"
+                    }
+
+                    crashWall()
+
+
+                    document.getElementById('score').innerText = '总分：' + cubes.length + '分'
+
+                }, 300)
+
+                function crashWall() {
+                    console.log(headx, headz)
+                    if (headx > 10 || headx < -10 || headz > 10 || headz < -10) {
+                        clearInterval(setInt);
+                        alert('游戏结束，总分：' + cubes.length + '分');
+                    }
+
+                }
+                function crashSelf() {
+                    if (cubes.length > 3) {
+                        for (let i = 1; i < cubes.length; i++) {
+                            console.log(cubes)
+                            if (cubes[0].position.x === cubes[i].position.x && cubes[0].position.z === cubes[i].position.z) {
+                                clearInterval(setInt);
+                                alert('游戏结束，总分：' + cubes.length + '分');
+                            }
+                        }
+                    }
+                }
+
+                document.body.addEventListener("keydown", function (k) {
+                    if (k.key == "w") {
+                        key = 'w'
+                    }
+                    if (k.key == "s") {
+                        key = 's'
+                    }
+                    if (k.key == "a") {
+                        key = 'a'
+                    }
+                    if (k.key == "d") {
+                        key = 'd'
+                    }
+                });
+
+            }
+
+            function changePos(array) {
+                if (array.length < 1) return
+                let len = array.length - 1
+                endx = array[len].position.x;
+                endz = array[len].position.z;
+                for (let i = len; i > 0; i--) {
+                    cubes[i].position.z = cubes[i - 1].position.z;
+                    cubes[i].position.x = cubes[i - 1].position.x;
+                }
+            }
+            function eating() {
+                if (food.position.x === headx && food.position.z === headz) {
+                    cubes.push(cubeDr(1, endx, 0.5, endz))
+                    let x = Math.round(Math.random() * 18 - 9) + 0.5;
+                    let z = Math.round(Math.random() * 18 - 9) + 0.5;
+                    for (let i = 1; i < cubes.length; i++) {
+                        if(cubes[i].position.x == x && cubes[i].position.z ==z ){
+                            x = Math.round(Math.random() * 18 - 9) + 0.5;
+                            z = Math.round(Math.random() * 18 - 9) + 0.5;
+                        }
+                    }
+                    food.position.x = x;
+                    food.position.z = z;
+                }
+            }
+
+
+            //场景
+            function iniScene() {
+                scene = new THREE.Scene();
+                // camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 3000);
+                camera = new THREE.OrthographicCamera(window.innerWidth / -frustumSize, window.innerWidth / frustumSize, window.innerHeight / frustumSize, window.innerHeight / -frustumSize, -200, 500);
+
+                // camera.zoom = 10
+
+                renderer = new THREE.WebGLRenderer({
+                    antialias: true,
+                });
+                camera.position.set(0, 25, 0);
+                camera.lookAt(scene.position);
+                renderer.setClearColor(0x222222);
+                // renderer.shadowMap.enabled = true;
+
+                renderer.setSize(window.innerWidth, window.innerHeight);
+
+                // scene.add(new THREE.AxesHelper(4));
+                document.getElementById('webgl-output').appendChild(renderer.domElement);
+            }
+
+            //灯光
+            function iniLight() {
+                light = new THREE.AmbientLight(0x333333);
+                scene.add(light);
+
+                light = new THREE.SpotLight(0x888888);
+                light.position.set(0, 40, 30);
+                light.castShadow = true;
+                light.shadow.mapSize.height = 4096;
+                light.shadow.mapSize.width = 4096;
+                scene.add(light);
+
+                light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+                light.position.set(0, 200, 0);
+                scene.add(light);
+            }
+
+            //地面 和 辅助网格
+            function iniPlane() {
+                let planeGeo = new THREE.PlaneGeometry(20, 20);
+                let planeMat = new THREE.MeshPhongMaterial({ color: 0x999999 });
+                let plane = new THREE.Mesh(planeGeo, planeMat);
+                plane.receiveShadow = true;
+                plane.position.y = -0.01;
+                plane.rotation.x = -0.5 * Math.PI;
+                scene.add(plane);
+
+                let planeGeo1 = new THREE.PlaneGeometry(22, 22);
+                let planeMat1 = new THREE.MeshPhongMaterial({ color: 0xffffff });
+                let plane1 = new THREE.Mesh(planeGeo1, planeMat1);
+                plane1.receiveShadow = true;
+                plane1.position.y = -0.02;
+                plane1.rotation.x = -0.5 * Math.PI;
+                scene.add(plane1);
+
+
+
+                let grid = new THREE.GridHelper(20, 20, 0x000000, 0x000000);
+                grid.material.transparent = true;
+                grid.material.opacity = 0.1;
+                scene.add(grid);
+            }
+
+            //立方体
+            function cubeDr(a, x, y, z) {
+                cr -= 0.1
+                if (cr < 0) {
+                    cr = 0,
+                        cg += 0.1
+                }
+                if (cg > 1) {
+                    cg = 1
+                    cb -= 0.1
+                }
+                if (cb < 0) {
+                    cr = 0.9;
+                    cg = 0.1;
+                    cb = 0.9;
+                }
+                let cubeGeo = new THREE.BoxGeometry(a, a, a);
+                let cubeMat = new THREE.MeshPhongMaterial({
+                    color: new THREE.Color(cr, cg, cb)
+                });
+                let cube = new THREE.Mesh(cubeGeo, cubeMat);
+                cube.position.set(x, y, z);
+                // cube.castShadow = true;
+                scene.add(cube);
+                return cube;
+            }
+
+            //球体
+            function sphereDr(r, x, y, z) {
+                let geometry = new THREE.SphereGeometry(r, 32, 32);
+                let material = new THREE.MeshPhongMaterial({
+                    color: 0x33ccff,
+                });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(x, y, z);
+                // mesh.castShadow = true;
+                scene.add(mesh);
+                return mesh;
+            }
+
+            //相机轨道控制器
+            function orbitControls() {
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                //自转
+                //controls.autoRotate = true;
+                controls.autoRotateSpeed = 0.2;
+                //阻尼 阻尼系数
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.4;
+                //缩放
+                controls.enableZoom = true;
+                controls.minDistance = 5;
+                controls.maxDistance = 1000;
+                //右键拖拽
+                controls.enablePan = false;
+            }
+
+            //改变窗口大小
+            function windowResize() {
+                window.addEventListener('resize', onWindowResize, false);
+
+                function onWindowResize() {
+                    // camera.aspect = window.innerWidth / window.innerHeight;
+                    // camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+                    camera.left = window.innerWidth / -frustumSize;
+                    camera.right = window.innerWidth / frustumSize;
+                    camera.top = window.innerHeight / frustumSize;
+                    camera.bottom = window.innerHeight / -frustumSize;
+                    camera.updateProjectionMatrix();
+
+                }
+            }
+
+            //渲染动画
+            function render() {
+                let delta = clock.getDelta();
+                requestAnimationFrame(render);
+
+                renderer.render(scene, camera);
+                // state.update();
+                // controls.update(delta);
+            }
+
+
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>
